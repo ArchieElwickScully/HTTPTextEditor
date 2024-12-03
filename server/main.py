@@ -1,5 +1,6 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import sqlite3
+import json
 
 class DatabaseManager:
     def __init__(self, db):
@@ -46,15 +47,17 @@ class DatabaseManager:
 
 class RequestHandler:
     def __init__(self):
+        self.dbm = DatabaseManager("accounts.db")
         self.commands = ["CreateAccount", "SignIn"]
 
-    def handlePost(data):
-        print("hi")
+    def handlePost(self, data):
+        d = json.loads(data)
 
-
+        
 
 class HTTP(BaseHTTPRequestHandler):
-
+    rh = RequestHandler()
+    
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -66,7 +69,7 @@ class HTTP(BaseHTTPRequestHandler):
         length = int(self.headers['Content-length'])
         body = self.rfile.read(length)
 
-        print(body)
+        self.rh.handlePost(body.decode("UTF-8"))
         
         self.send_response(200)
         self.end_headers()
