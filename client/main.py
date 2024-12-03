@@ -17,7 +17,7 @@ def main():
         username = input("Enter username: ")
         password = hash(input("Enter Password: ")) #immediately hash so is never stored in memory
         
-        d = {'nut': 'balls', 'cum': 'sex'}
+        d = {'hi': '1', 'hello': '2'}
         headers = {'Content-Length': str(len(d))}
         
         r = requests.post("http://localhost:8000/", json = d)
