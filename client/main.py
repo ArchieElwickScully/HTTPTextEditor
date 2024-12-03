@@ -1,15 +1,44 @@
 import requests
 
 
+def clear():
+    print("\033c")
+
+
 def main():
-    #r = requests.get('http://10.0.125.138:8000/a.txt')
-    r = requests.get('http://localhost:8000/')
+    #Account system
 
-    #print(r.text)
-    print(r)
+    q = input("Would you like to Create account or Log in [0/1]\n> ")
 
+    if q == "0":
+        clear()
+
+        print("==============\nCreate Account\n==============\n\n")
+        username = input("Enter username: ")
+        password = hash(input("Enter Password: ")) #immediately hash so is never stored in memory
+        
+        d = {'nut': 'balls', 'cum': 'sex'}
+        headers = {'Content-Length': str(len(d))}
+        
+        r = requests.post("http://localhost:8000/", json = d)
+
+        #send put request to server with username and password
+
+    elif q == "1":
+        clear()
+
+        print("======\nLog in\n======\n\n")
+    
+        username = input("Enter username: ")
+        password = hash(input("Enter Password: "))
+
+        
 if __name__ == "__main__":
     main()
+
+
+
+
 
 
 
@@ -80,5 +109,56 @@ encrypt data in requests, where to store keys on server?
 record locking
 serialisaion, time stamp processing
 commitment ordering - incase ppl commit at same time
+
+
+
+client sends post rq to server, server logs request with time and
+sends post request back to the client with updated content
+
+if 2 people editing will favor person whos request has the earliest timestamt
+
+
+==============
+ACCOUNT SYSTEM
+==============
+
+create or log into account
+
+where start?
+just prompt and hash on clientside then do sql on server
+
+    Create
+    ------
+        Client
+        ------
+            post request consisting of username and hashed password
+            hashing is done clientside obviously
+
+        Server
+        ------
+            validate username and password to ensure username not in use
+            add username and password to sql database
+
+
+    Sign in
+    -------
+        Client
+        ------
+            Send get rq to server with username and hashed password
+            once session token is recieved will store it as header for
+            future requests
+
+            store it in json file?
+            On startup will attempt to use token, if invalid will prompt login
+
+
+        Server
+        ------
+            Recieve username and password and return unique session token
+            to the client and store it for that users session
+            
+            Token will expire after x amount of time
+
+    
 
 """
