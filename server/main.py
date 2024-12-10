@@ -43,17 +43,39 @@ class DatabaseManager:
 
     def close(self):
         self.connection.close()
-
+        
 
 class RequestHandler:
     def __init__(self):
         self.dbm = DatabaseManager("accounts.db")
-        self.commands = ["CreateAccount", "SignIn"]
+        self.dbm.createTable()
+        
+        self.commands = {"CreateAccount" : self.createAccount, "SignIn" : self.createAccount}
+        """
+        Create Account : [username, password]
+        SignIn : [username, password]
+        """
+
 
     def handlePost(self, data):
         d = json.loads(data)
 
+        c = d['command']
+
+        if c in self.commands:
+            return self.commands[c](d['args'])
+        exit()
+        else:
+            return 400, "Command does not exist"
         
+    def createAccount(self, args):
+        try:
+            self.dbm.addAccount(args['username'], args['password'])
+            print('created account:', args['username'])
+            
+            return 200, "Success. Account created"
+        except:
+            return 400, "Account creation error, username already taken?"
 
 class HTTP(BaseHTTPRequestHandler):
     rh = RequestHandler()
@@ -69,12 +91,12 @@ class HTTP(BaseHTTPRequestHandler):
         length = int(self.headers['Content-length'])
         body = self.rfile.read(length)
 
-        self.rh.handlePost(body.decode("UTF-8"))
-        
-        self.send_response(200)
+        response, m = self.rh.handlePost(body.decode("UTF-8"))
+                
+        self.send_response(response)
         self.end_headers()
 
-        self.wfile.write(bytes("poo", "utf-8"))
+        self.wfile.write(bytes(m, encoding='utf-8'))
 
 
 def main():

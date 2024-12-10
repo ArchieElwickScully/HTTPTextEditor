@@ -17,12 +17,12 @@ def main():
         username = input("Enter username: ")
         password = hash(input("Enter Password: ")) #immediately hash so is never stored in memory
         
-        d = {'hi': '1', 'hello': '2'}
-        headers = {'Content-Length': str(len(d))}
+        d = {'command': "CreateAccount",
+             "args" : {'username' : username, 'password' : password}}
         
+        headers = {'Content-Length': str(len(d))}
         r = requests.post("http://localhost:8000/", json = d)
-
-        #send put request to server with username and password
+        print(r.text)
 
     elif q == "1":
         clear()
