@@ -32,3 +32,12 @@ class RequestHandler:
             return 200, "Success. Account created"
         except:
             return 400, "Account creation error, username already taken?"
+
+    def signIn(self, args):
+        try:
+            self.dbm.validateAccount(args['username'], args['password'])
+            # generate session key?
+
+            return 200, "Succes. Sign In complete"
+        except:
+            return 400, "Sign In error"
