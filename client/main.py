@@ -1,4 +1,5 @@
 import requests
+import hashlib
 
 
 def clear():
@@ -15,12 +16,15 @@ def main():
 
         print("==============\nCreate Account\n==============\n\n")
         username = input("Enter username: ")
-        password = hash(input("Enter Password: ")) #immediately hash so is never stored in memory
-        
+        password = input("Enter Password: ") #immediately hash so is never stored in memory
+
+        hashobj = hashlib.sha256(str.encode(password))
+        password = hashobj.hexdigest()
+
         d = {'command': "CreateAccount",
              "args" : {'username' : username, 'password' : password}}
         
-        headers = {'Content-Length': str(len(d))}
+        #headers = {'Content-Length': str(len(d))}
         r = requests.post("http://localhost:8000/", json = d)
         print(r.text)
 
@@ -30,9 +34,17 @@ def main():
         print("======\nLog in\n======\n\n")
     
         username = input("Enter username: ")
-        password = hash(input("Enter Password: "))
+        password = input("Enter Password: ")
 
-        
+        hashobj = hashlib.sha256(str.encode(password))
+        password = hashobj.hexdigest()
+
+        d = {'command': "SignIn",
+             "args" : {'username' : username, 'password' : password}}
+
+        r = requests.post("http://localhost:8000/", json = d)
+        print(r.text)
+
 if __name__ == "__main__":
     main()
 
@@ -160,5 +172,8 @@ just prompt and hash on clientside then do sql on server
             Token will expire after x amount of time
 
     
+    
+on window close send request to sign out
+security levels on acocunts for session log in time?
 
 """

@@ -8,7 +8,7 @@ class RequestHandler:
         self.dbm = DatabaseManager("accounts.db")
         self.dbm.createTable()
 
-        self.commands = {"CreateAccount": self.createAccount, "SignIn": self.createAccount}
+        self.commands = {"CreateAccount": self.createAccount, "SignIn": self.signIn}
         """
         Create Account : [username, password]
         SignIn : [username, password]
@@ -30,14 +30,19 @@ class RequestHandler:
             print('created account:', args['username'])
 
             return 200, "Success. Account created"
-        except:
+        except: # exception too broad but i will fix later
             return 400, "Account creation error, username already taken?"
 
     def signIn(self, args):
         try:
-            self.dbm.validateAccount(args['username'], args['password'])
-            # generate session key?
+            if self.dbm.validateAccount(args['username'], args['password']):
 
-            return 200, "Succes. Sign In complete"
+                # generate session key?
+                return 200, "Succes. Sign In complete"
+            else:
+                print("Account sign in failure on:", args['username'])
+                return 400, "Sign In error" # make more specific later, username does not exist, password incorrect etc
+
         except:
+            print('error')
             return 400, "Sign In error"
