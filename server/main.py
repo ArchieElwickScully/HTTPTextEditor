@@ -1,6 +1,6 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
-from server.RequestHandler import RequestHandler
+from server.manager.RequestHandler import RequestHandler
 
 
 class HTTP(BaseHTTPRequestHandler):

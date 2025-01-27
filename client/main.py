@@ -176,4 +176,15 @@ just prompt and hash on clientside then do sql on server
 on window close send request to sign out
 security levels on acocunts for session log in time?
 
+
+
+Token system
+
+on sign in generate 24 hour token
+check token with each request
+refresh token list and remove invalid tokens
+use unix time
+
+token structure
+{token, account, time}
 """

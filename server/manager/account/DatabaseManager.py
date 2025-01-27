@@ -31,6 +31,10 @@ class DatabaseManager:
         self.cur.execute("SELECT password FROM accounts WHERE username = ?", (username,))
 
         record = self.cur.fetchall()
+
+        if len(record) < 1:
+            return False
+
         p = record[0][0]
 
         if password == p:

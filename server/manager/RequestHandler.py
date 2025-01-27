@@ -1,6 +1,6 @@
 import json
 
-from server.DatabaseManager import DatabaseManager
+from server.manager.account.DatabaseManager import DatabaseManager
 
 
 class RequestHandler:
@@ -22,6 +22,7 @@ class RequestHandler:
         if c in self.commands:
             return self.commands[c](d['args'])
         else:
+            print("returned command does not exist")
             return 400, "Command does not exist"
 
     def createAccount(self, args):
@@ -36,7 +37,6 @@ class RequestHandler:
     def signIn(self, args):
         try:
             if self.dbm.validateAccount(args['username'], args['password']):
-
                 # generate session key?
                 return 200, "Succes. Sign In complete"
             else:
@@ -44,5 +44,5 @@ class RequestHandler:
                 return 400, "Sign In error" # make more specific later, username does not exist, password incorrect etc
 
         except:
-            print('error')
-            return 400, "Sign In error"
+            print('unknown error')
+            return 400, "Unknown Sign In error"
