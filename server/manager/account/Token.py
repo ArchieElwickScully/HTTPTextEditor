@@ -1,5 +1,6 @@
 from time import time
 
+
 class Token:
     def __init__(self, username, uid, t):
         self.username = username

@@ -1,11 +1,14 @@
 import json
 
 from server.manager.account.DatabaseManager import DatabaseManager
+from server.manager.account.TokenManager import TokenManager
 
 
 class RequestHandler:
     def __init__(self):
         self.dbm = DatabaseManager("accounts.db")
+        self.tm = TokenManager()
+
         self.dbm.createTable()
 
         self.commands = {"CreateAccount": self.createAccount, "SignIn": self.signIn}
@@ -37,8 +40,10 @@ class RequestHandler:
     def signIn(self, args):
         try:
             if self.dbm.validateAccount(args['username'], args['password']):
-                # generate session key?
-                return 200, "Succes. Sign In complete"
+
+                token = self.tm.generateToken(args['username'])
+
+                return 200, "Succes. Sign In complete", token
             else:
                 print("Account sign in failure on:", args['username'])
                 return 400, "Sign In error" # make more specific later, username does not exist, password incorrect etc

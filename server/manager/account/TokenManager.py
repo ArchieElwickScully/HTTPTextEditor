@@ -3,6 +3,7 @@ from Token import Token
 from uuid import uuid4
 from time import time
 
+
 class TokenManager:
     def __init__(self):
         self.activetokens = []

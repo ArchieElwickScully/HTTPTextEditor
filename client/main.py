@@ -119,7 +119,7 @@ encrypt data in requests, where to store keys on server?
 
 
 record locking
-serialisaion, time stamp processing
+serialisaion, time stamp processing <------------------------------- reffer back here later in development
 commitment ordering - incase ppl commit at same time
 
 
@@ -186,5 +186,21 @@ refresh token list and remove invalid tokens
 use unix time
 
 token structure
-{token, account, time}
+token, account, time
+
+token system complete now
+
+validate passwords clientside ------------------------------------ do this later when developing client
+
+when committing to file, do we send request with only token or with token and username
+weigh up:
+sending both - more network heavy, possibly slowing down network and limiting requests
+             - extra clientside lifting - less optimal for slower systems -> not what we are looking for
+             
+only token - heavier on server - will have to resolve username from token database may take a while if lot
+                                 of active tokens therefore less scalable
+
+wait i need to hash tokens wups
+they arent stored in plaintext but in memory though so would be more difficult to exfiltrate
+hashing will add extra load on server
 """
