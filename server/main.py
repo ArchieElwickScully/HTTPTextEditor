@@ -17,8 +17,8 @@ class HTTP(BaseHTTPRequestHandler):
         length = int(self.headers['Content-length'])
         body = self.rfile.read(length)
 
-        response, m = self.rh.handlePost(body.decode("UTF-8"))
-                
+        response, m, uuid = self.rh.handlePost(body.decode("UTF-8"))
+
         self.send_response(response)
         self.end_headers()
 

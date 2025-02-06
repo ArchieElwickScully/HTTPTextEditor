@@ -26,16 +26,16 @@ class RequestHandler:
             return self.commands[c](d['args'])
         else:
             print("returned command does not exist")
-            return 400, "Command does not exist"
+            return 400, "Command does not exist", None
 
     def createAccount(self, args):
         try:
             self.dbm.addAccount(args['username'], args['password'])
-            print('created account:', args['username'])
+            print(f'created account: {args['username']}')
 
-            return 200, "Success. Account created"
+            return 200, "Success. Account created", None
         except: # exception too broad but i will fix later
-            return 400, "Account creation error, username already taken?"
+            return 400, "Account creation error, username already taken?", None
 
     def signIn(self, args):
         try:
@@ -43,11 +43,12 @@ class RequestHandler:
 
                 token = self.tm.generateToken(args['username'])
 
+                print(f'successful sign into {args['username']}')
                 return 200, "Succes. Sign In complete", token
             else:
-                print("Account sign in failure on:", args['username'])
-                return 400, "Sign In error" # make more specific later, username does not exist, password incorrect etc
+                print(f'Account sign in failure on: {args['username']}')
+                return 400, "Sign In error", None # make more specific later, username does not exist, password incorrect etc
 
         except:
             print('unknown error')
-            return 400, "Unknown Sign In error"
+            return 400, "Unknown Sign In error", None

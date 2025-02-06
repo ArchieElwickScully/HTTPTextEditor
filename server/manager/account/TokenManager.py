@@ -1,4 +1,4 @@
-from Token import Token
+from server.manager.account.Token import Token
 
 from uuid import uuid4
 from time import time

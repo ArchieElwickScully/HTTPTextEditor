@@ -8,6 +8,7 @@ def clear():
 
 def main():
     #Account system
+    clear()
 
     q = input("Would you like to Create account or Log in [0/1]\n> ")
 
@@ -25,8 +26,10 @@ def main():
              "args" : {'username' : username, 'password' : password}}
         
         #headers = {'Content-Length': str(len(d))}
+        print(f'Data to be sent: {d}\n')
+
         r = requests.post("http://localhost:8000/", json = d)
-        print(r.text)
+        print(f'Response from server: {r.text}')
 
     elif q == "1":
         clear()
@@ -42,8 +45,10 @@ def main():
         d = {'command': "SignIn",
              "args" : {'username' : username, 'password' : password}}
 
+        print(f'Data to be sent: {d}\n')
+
         r = requests.post("http://localhost:8000/", json = d)
-        print(r.text)
+        print(f'Response from server: {r.text}')
 
 if __name__ == "__main__":
     main()
@@ -203,4 +208,7 @@ only token - heavier on server - will have to resolve username from token databa
 wait i need to hash tokens wups
 they arent stored in plaintext but in memory though so would be more difficult to exfiltrate
 hashing will add extra load on server
+
+f r o n t e n d   t i m e
+:(
 """
