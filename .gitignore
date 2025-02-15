@@ -162,3 +162,4 @@ cython_debug/
 server/manager/accounts.db
 /.idea
 server/manager/accounts.db
+server/manager/account/accounts.db

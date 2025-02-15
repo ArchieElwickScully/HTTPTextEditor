@@ -30,12 +30,17 @@ class RequestHandler:
 
     def createAccount(self, args):
         try:
+            if self.dbm.nameExists(args['username']):
+                return 400, "Account creation error, Username already taken", None
+
             self.dbm.addAccount(args['username'], args['password'])
             print(f'created account: {args['username']}')
 
             return 200, "Success. Account created", None
+
         except: # exception too broad but i will fix later
-            return 400, "Account creation error, username already taken?", None
+            print(f'account creation error on: {args['username']}')
+            return 400, "Account creation error", None
 
     def signIn(self, args):
         try:
@@ -45,6 +50,7 @@ class RequestHandler:
 
                 print(f'successful sign into {args['username']}')
                 return 200, "Succes. Sign In complete", token
+
             else:
                 print(f'Account sign in failure on: {args['username']}')
                 return 400, "Sign In error", None # make more specific later, username does not exist, password incorrect etc
