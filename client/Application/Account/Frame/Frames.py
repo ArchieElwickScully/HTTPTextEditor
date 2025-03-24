@@ -1,6 +1,10 @@
+import hashlib
+import json
 from tkinter import StringVar
 import customtkinter as ctk
 from itertools import cycle
+
+import requests
 
 
 class MainFrame(ctk.CTkFrame):
@@ -73,7 +77,7 @@ class ButtonFrame(ctk.CTkFrame):
         self.passwordEntry.pack(pady=(20, 0), padx=20)
 
         self.actionButton = ctk.CTkButton(master=self, textvariable=self.stateStringVar,
-                                          width=80)
+                                          width=80, command=self.doActionButton)
         self.actionButton.pack(pady=(20, 0))
 
         self.switchButton = ctk.CTkButton(master=self, textvariable=self.switchButtonText,
@@ -87,3 +91,44 @@ class ButtonFrame(ctk.CTkFrame):
     def swapState(self):
         self.stateStringVar.set(next(self.states))
         self.switchButtonText.set(next(self.switchButtonStates))
+
+    def doActionButton(self):
+        username = self.usernameEntry.get()
+        password = self.passwordEntry.get()
+
+        match self.stateStringVar.get():
+            case 'Login':
+                self.login(username, password)
+
+            case 'Create':
+                self.createAccount(username, password)
+
+            case _:
+                print('uhoh(something has gone terribly wrong\n(goodluck)')
+
+    def login(self, username, password):
+        hashobj = hashlib.sha256(str.encode(password))
+        password = hashobj.hexdigest()
+
+        sendData = {'command': "SignIn",
+                    "args": {'username': username, 'password': password}}
+
+        r = requests.post("http://localhost:8000/", json=sendData)
+        response = json.loads(r.text)
+
+        print(f'Response from server: {response['writtenResponse']}\nToken: {response['token']}')
+
+    def createAccount(self, username, password):
+        hashobj = hashlib.sha256(str.encode(password))
+        password = hashobj.hexdigest()
+
+        sendData = {'command': "CreateAccount",
+             "args": {'username': username, 'password': password}}
+
+        r = requests.post("http://localhost:8000/", json = sendData)
+        response = json.loads(r.text)
+
+        print(f'Response from server: {response['writtenResponse']}\nToken: {response['token']}')
+
+
+
