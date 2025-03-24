@@ -1,4 +1,5 @@
 from client.Application.Manager.RequestHandler import RequestHandler
+from client.Application.Account.InfoBox import InfoBox
 
 from tkinter import StringVar
 import customtkinter as ctk
@@ -101,16 +102,16 @@ class ButtonFrame(ctk.CTkFrame):
                 response, token = self.rq.doAccountRequest('SignIn', username, password)
 
                 if token != 'None':
-                    print(response)
+                    InfoBox.newInfoBox(response)
 
                     self.master.master.token = token # this straight up feels wrong
                     self.quit()
                 else:
-                    print(response)
+                    InfoBox.newInfoBox(response)
 
             case 'Create':
                 response = self.rq.doAccountRequest('CreateAccount', username, password)[0]
-                print(response)
+                InfoBox.newInfoBox(response)
 
             case _:
                 print('uhoh(something has gone terribly wrong\n(goodluck)')
