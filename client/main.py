@@ -1,3 +1,5 @@
+import json
+
 import requests
 import hashlib
 
@@ -48,7 +50,9 @@ def main():
         print(f'Data to be sent: {d}\n')
 
         r = requests.post("http://localhost:8000/", json = d)
-        print(f'Response from server: {r.text}')
+        response = json.loads(r.text)
+        print(response)
+        print(f'Response from server: {response['writtenResponse']}\nToken: {response['token']}')
 
 if __name__ == "__main__":
     main()

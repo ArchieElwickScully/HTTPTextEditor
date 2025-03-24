@@ -18,11 +18,12 @@ class HTTP(BaseHTTPRequestHandler):
         body = self.rfile.read(length)
 
         response, m, uuid = self.rh.handlePost(body.decode("UTF-8"))
-
+        resp = '{' + f'"writtenResponse": "{m}", "token": "{uuid}"' + '}' # bit of a hacky way to do this but running
+                                                                      # out of time
         self.send_response(response)
         self.end_headers()
 
-        self.wfile.write(bytes(m, encoding='utf-8'))
+        self.wfile.write(bytes(resp, encoding='utf-8'))
 
 
 def main():
