@@ -1,18 +1,18 @@
+from client.Application.Account.Frame import Frames
+
 import customtkinter as ctk
 import math
-
-from client.Application.Account.Frame import Frames
 
 
 class AccountWindow(ctk.CTk):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        ctk.set_appearance_mode('dark')
 
         # vars
         self.lastClick = (0, 0)
         self.HEIGHT = 400
         self.WIDTH = 650
+        self.token = ''
 
         # window attributes etc
         self.geometry('650x400')

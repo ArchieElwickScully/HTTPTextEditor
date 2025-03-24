@@ -1,10 +1,8 @@
-import hashlib
-import json
+from client.Application.Manager.RequestHandler import RequestHandler
+
 from tkinter import StringVar
 import customtkinter as ctk
 from itertools import cycle
-
-import requests
 
 
 class MainFrame(ctk.CTkFrame):
@@ -55,6 +53,8 @@ class ButtonFrame(ctk.CTkFrame):
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
 
+        self.rq = RequestHandler()
+
         self.states = cycle(['Login', 'Create'])
         self.switchButtonStates = cycle(['Dont have an account?', 'Already have an account?'])
 
@@ -98,37 +98,19 @@ class ButtonFrame(ctk.CTkFrame):
 
         match self.stateStringVar.get():
             case 'Login':
-                self.login(username, password)
+                response, token = self.rq.doAccountRequest('SignIn', username, password)
+
+                if token != 'None':
+                    print(response)
+
+                    self.master.master.token = token # this straight up feels wrong
+                    self.quit()
+                else:
+                    print(response)
 
             case 'Create':
-                self.createAccount(username, password)
+                response = self.rq.doAccountRequest('CreateAccount', username, password)[0]
+                print(response)
 
             case _:
                 print('uhoh(something has gone terribly wrong\n(goodluck)')
-
-    def login(self, username, password):
-        hashobj = hashlib.sha256(str.encode(password))
-        password = hashobj.hexdigest()
-
-        sendData = {'command': "SignIn",
-                    "args": {'username': username, 'password': password}}
-
-        r = requests.post("http://localhost:8000/", json=sendData)
-        response = json.loads(r.text)
-
-        print(f'Response from server: {response['writtenResponse']}\nToken: {response['token']}')
-
-    def createAccount(self, username, password):
-        hashobj = hashlib.sha256(str.encode(password))
-        password = hashobj.hexdigest()
-
-        sendData = {'command': "CreateAccount",
-             "args": {'username': username, 'password': password}}
-
-        r = requests.post("http://localhost:8000/", json = sendData)
-        response = json.loads(r.text)
-
-        print(f'Response from server: {response['writtenResponse']}\nToken: {response['token']}')
-
-
-

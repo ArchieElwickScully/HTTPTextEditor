@@ -1,20 +1,27 @@
+from client.Application.Account.AccountWindow import AccountWindow
+from client.Application.Manager.RequestHandler import RequestHandler
+
 import customtkinter as ctk
 
-from client.Application.Account.AccountWindow import AccountWindow
 
+class App:
+    def __init__(self):
+        self.token = ''
 
-def main():
-    token = ''
+        self.rq = RequestHandler()
 
-    ctk.set_appearance_mode('dark')
-    ctk.FontManager.load_font('Myriad Pro Light.ttf')
+        ctk.set_appearance_mode('dark')
+        ctk.FontManager.load_font('Myriad Pro Light.ttf')
 
-    accountWindow = AccountWindow(fg_color='systemTransparent')
-    accountWindow.mainloop()
+        self.accountWindow = AccountWindow(fg_color='systemTransparent')
+        self.accountWindow.mainloop()
+
+        self.token = self.accountWindow.token
+        print(self.token)
 
 
 if __name__ == '__main__':
-    main()
+    app = App()
 
 
 
