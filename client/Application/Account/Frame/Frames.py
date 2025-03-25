@@ -54,8 +54,6 @@ class ButtonFrame(ctk.CTkFrame):
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
 
-        self.rq = RequestHandler()
-
         self.states = cycle(['Login', 'Create'])
         self.switchButtonStates = cycle(['Dont have an account?', 'Already have an account?'])
 

@@ -2,13 +2,15 @@ from client.Application.Account.AccountWindow import AccountWindow
 from client.Application.Manager.RequestHandler import RequestHandler
 
 import customtkinter as ctk
+import multiprocessing
 
 
 class App:
     def __init__(self):
-        self.token = ''
+        self.requestQueue = multiprocessing.Queue()
 
-        self.rq = RequestHandler()
+        self.rh = RequestHandler(self.requestQueue)
+        self.rh.start()
 
         ctk.set_appearance_mode('dark')
         ctk.FontManager.load_font('Myriad Pro Light.ttf')
@@ -34,4 +36,32 @@ present login page
     once token recieved close this page
 
 open editor page
+
+TODO
+====
+
+multithreading
+platform independed
+
+
+
+multithreading -> well multiprocessing cuz of gil (just incase)
+
+have request handler running in its own process in a loop with a queue in shared memory here
+how return data such as server responses?
+    -> for loging in etc we can just have it spawn a messagebox mayb idk
+    -> when typing shouldnt be too much of an issue i dont think we just need a label that notifies of wether
+       file is backed up or not
+    -> when loggingin in we will need the token in shared memory anyway - can i close a program from a seprate process?
+       ooooo have the request handler running in the main thread and uis in their own process
+       we ball
+       
+multiprocessing!
+start file and launch login ui as own process
+then we start the request handler loop 
+
+im so stupid i fully wrote this then started to do it the wrong way
+fun challenge then ig lmao
+tbf it kinda makes more sense to have the ui etc in the main thread and the rh in the background kinda thing
+
 """
