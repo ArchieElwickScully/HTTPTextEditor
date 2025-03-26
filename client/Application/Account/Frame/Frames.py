@@ -1,4 +1,3 @@
-from client.Application.Manager.RequestHandler import RequestHandler
 from client.Application.Account.InfoBox import InfoBox
 
 from tkinter import StringVar
@@ -94,10 +93,36 @@ class ButtonFrame(ctk.CTkFrame):
     def doActionButton(self):
         username = self.usernameEntry.get()
         password = self.passwordEntry.get()
+        command = ''
+
+        if username == '' or password == '':
+            print('no')
+
 
         match self.stateStringVar.get():
             case 'Login':
-                response, token = self.rq.doAccountRequest('SignIn', username, password)
+                command = 'SignIn'
+            case 'Create':
+                command = 'CreateAccount'
+            case _:
+                print('uhoh(something has gone terribly wrong\n(goodluck)')
+
+        #build command
+        dataForQueue = {
+            'type': 'account',
+            'data': {
+                'command': command,
+                'username': username,
+                'password': password
+            }
+        }
+
+        self.master.master.requestQueue.put(dataForQueue) #warcrimes
+
+"""
+        match self.stateStringVar.get():
+            case 'Login':
+                response, token = self.master.master.requestQueue.put('SignIn', username, password)
 
                 if token != 'None':
                     InfoBox.newInfoBox(response)
@@ -113,3 +138,4 @@ class ButtonFrame(ctk.CTkFrame):
 
             case _:
                 print('uhoh(something has gone terribly wrong\n(goodluck)')
+"""

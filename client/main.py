@@ -1,29 +1,34 @@
-from client.Application.Account.AccountWindow import AccountWindow
 from client.Application.Manager.RequestHandler import RequestHandler
+from client.Application.Account.AccountWindow import AccountWindow
 
 import customtkinter as ctk
 import multiprocessing
 
-
 class App:
-    def __init__(self):
-        self.requestQueue = multiprocessing.Queue()
-
-        self.rh = RequestHandler(self.requestQueue)
-        self.rh.start()
+    def __init__(self, requestQueue):
+        self.requestQueue = requestQueue
 
         ctk.set_appearance_mode('dark')
         ctk.FontManager.load_font('Myriad Pro Light.ttf')
 
-        self.accountWindow = AccountWindow(fg_color='systemTransparent')
+        self.accountWindow = AccountWindow(self.requestQueue, fg_color='systemTransparent')
         self.accountWindow.mainloop()
 
-        self.token = self.accountWindow.token
-        print(self.token)
+        #self.token = self.accountWindow.token
+        #print(self.token)
+
+    def outputThread(self):
+        while True:
+
 
 
 if __name__ == '__main__':
-    app = App()
+    rq = multiprocessing.Queue()
+
+    rh = RequestHandler(rq)
+    rh.start()
+
+    app = App(rq)
 
 
 

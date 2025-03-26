@@ -5,10 +5,11 @@ import math
 
 
 class AccountWindow(ctk.CTk):
-    def __init__(self, **kwargs):
+    def __init__(self, requestQueue, **kwargs):
         super().__init__(**kwargs)
 
         # vars
+        self.requestQueue = requestQueue
         self.lastClick = (0, 0)
         self.HEIGHT = 400
         self.WIDTH = 650

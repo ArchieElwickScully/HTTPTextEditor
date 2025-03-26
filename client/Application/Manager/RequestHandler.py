@@ -1,8 +1,8 @@
-import multiprocessing
-
 import requests
 import hashlib
 import json
+
+import multiprocessing
 
 
 class RequestHandler(multiprocessing.Process):
@@ -13,15 +13,15 @@ class RequestHandler(multiprocessing.Process):
         self.queue = queue
         self.server = "http://localhost:8000/"
 
+
     def run(self):
         while True:
 
-            while not self.queue.Empty:
+            while not self.queue.empty():
                 task = self.queue.get()
-
                 match task['type']:
                     case 'account':
-                        self.doAccountRequest(task['command'], task['username'], task['password'])
+                        self.doAccountRequest(task['data']['command'], task['data']['username'], task['data']['password'])
                     case _:
                         print(f'request handler error on {task}')
 
@@ -38,7 +38,11 @@ class RequestHandler(multiprocessing.Process):
         textResponse = response['writtenResponse']
         token = response['token']
 
-        return textResponse, token
+        if token != 'None':
+            self.token = token
+            print(self.token)
+
+        self.outQueue.put((textResponse, token))
 
 '''
 each task will have a command
