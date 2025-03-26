@@ -2,14 +2,19 @@ from client.Application.Manager.RequestHandler import RequestHandler
 from client.Application.Account.AccountWindow import AccountWindow
 
 import customtkinter as ctk
+import threading
 import multiprocessing
 
 class App:
-    def __init__(self, requestQueue):
+    def __init__(self, requestQueue, outputQueue):
         self.requestQueue = requestQueue
+        self.outputQueue = outputQueue
 
         ctk.set_appearance_mode('dark')
         ctk.FontManager.load_font('Myriad Pro Light.ttf')
+
+        thread = threading.Thread(target=self.outputThread, daemon=True) # im sure theres probably a better way to do
+        thread.start()                                                   # this but im tired and running out of time
 
         self.accountWindow = AccountWindow(self.requestQueue, fg_color='systemTransparent')
         self.accountWindow.mainloop()
@@ -19,16 +24,22 @@ class App:
 
     def outputThread(self):
         while True:
+            if not self.outputQueue.empty():
+                serverResponse, tokenBool = self.outputQueue.get()
+                print(serverResponse)
 
+                if tokenBool:
+                    self.accountWindow.master.destroy()
 
 
 if __name__ == '__main__':
     rq = multiprocessing.Queue()
+    oq = multiprocessing.Queue()
 
-    rh = RequestHandler(rq)
+    rh = RequestHandler(rq, oq)
     rh.start()
 
-    app = App(rq)
+    app = App(rq, oq)
 
 
 

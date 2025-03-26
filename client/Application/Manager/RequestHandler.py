@@ -6,11 +6,12 @@ import multiprocessing
 
 
 class RequestHandler(multiprocessing.Process):
-    def __init__(self, queue):
+    def __init__(self, queue, outQueue):
         super().__init__()
         self.token = ''
 
         self.queue = queue
+        self.outQueue = outQueue
         self.server = "http://localhost:8000/"
 
 
@@ -40,9 +41,10 @@ class RequestHandler(multiprocessing.Process):
 
         if token != 'None':
             self.token = token
-            print(self.token)
+            self.outQueue.put((textResponse, True))
+            return
 
-        self.outQueue.put((textResponse, token))
+        self.outQueue.put((textResponse, False))
 
 '''
 each task will have a command
