@@ -117,7 +117,7 @@ class ButtonFrame(ctk.CTkFrame):
             }
         }
 
-        self.master.master.requestQueue.put(dataForQueue) #warcrimes
+        self.master.master.requestQueue.put(dataForQueue) # warcrimes
 
 """
         match self.stateStringVar.get():

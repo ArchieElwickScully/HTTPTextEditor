@@ -28,8 +28,8 @@ class App:
                 serverResponse, tokenBool = self.outputQueue.get()
                 print(serverResponse)
 
-                if tokenBool:
-                    self.accountWindow.master.destroy()
+                #if tokenBool:
+                    #self.accountWindow.master.destroy()
 
 
 if __name__ == '__main__':
