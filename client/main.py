@@ -1,7 +1,10 @@
+import sys
+
 from client.Application.Manager.RequestHandler import RequestHandler
 from client.Application.Account.AccountWindow import AccountWindow
 
 import customtkinter as ctk
+from sys import platform
 import threading
 import multiprocessing
 
@@ -16,7 +19,8 @@ class App:
         thread = threading.Thread(target=self.outputThread, daemon=True) # im sure theres probably a better way to do
         thread.start()                                                   # this but im tired and running out of time
 
-        self.accountWindow = AccountWindow(self.requestQueue, fg_color='systemTransparent')
+        self.accountWindow = AccountWindow(self.requestQueue)
+
         self.accountWindow.mainloop()
 
         #self.token = self.accountWindow.token

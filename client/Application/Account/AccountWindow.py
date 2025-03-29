@@ -1,6 +1,7 @@
 from client.Application.Account import Frames
 
 import customtkinter as ctk
+from sys import platform
 import math
 
 
@@ -18,7 +19,14 @@ class AccountWindow(ctk.CTk):
         # window attributes etc
         self.geometry('650x400')
         self.overrideredirect(True)
-        self.wm_attributes("-transparent", True)
+
+        if platform.lower() == 'darwin':
+            self.configure(fg_color='systemTransparent')
+            self.wm_attributes("-transparent", True)
+        elif platform.lower() == 'windows':
+            self.wm_attributes("-topmost", True)
+            self.wm_attributes("-disabled", True)
+            self.wm_attributes("-transparentcolor", "white")
 
         self.centre()
 
