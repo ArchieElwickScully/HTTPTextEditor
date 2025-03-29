@@ -1,10 +1,7 @@
-import sys
-
 from client.Application.Manager.RequestHandler import RequestHandler
 from client.Application.Account.AccountWindow import AccountWindow
 
 import customtkinter as ctk
-from sys import platform
 import threading
 import multiprocessing
 
@@ -20,7 +17,6 @@ class App:
         thread.start()                                                   # this but im tired and running out of time
 
         self.accountWindow = AccountWindow(self.requestQueue)
-
         self.accountWindow.mainloop()
 
         #self.token = self.accountWindow.token
@@ -30,6 +26,7 @@ class App:
         while True:
             if not self.outputQueue.empty():
                 serverResponse, tokenBool = self.outputQueue.get()
+                self.accountWindow.alerts.setText(serverResponse)
                 print(serverResponse)
 
                 #if tokenBool:

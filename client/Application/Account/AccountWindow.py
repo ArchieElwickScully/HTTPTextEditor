@@ -4,10 +4,13 @@ import customtkinter as ctk
 from sys import platform
 import math
 
+from client.Application.Account.InfoBox.InfoBox import InfoBox
+
 
 class AccountWindow(ctk.CTk):
     def __init__(self, requestQueue, **kwargs):
         super().__init__(**kwargs)
+        self.alerts = InfoBox()
 
         # vars
         self.requestQueue = requestQueue
