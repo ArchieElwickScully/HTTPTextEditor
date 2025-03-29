@@ -1,5 +1,3 @@
-from client.Application.Account.InfoBox import InfoBox
-
 from tkinter import StringVar
 import customtkinter as ctk
 from itertools import cycle
@@ -21,8 +19,6 @@ class MainFrame(ctk.CTkFrame):
                               column=1, row=0, sticky=ctk.NSEW)
 
         self.grid_propagate(False)
-
-        self.framePool = cycle([])
 
 
 class TextFrame(ctk.CTkFrame):

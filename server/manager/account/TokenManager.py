@@ -1,3 +1,5 @@
+import math
+
 from server.manager.account.Token import Token
 
 from uuid import uuid4
@@ -10,7 +12,7 @@ class TokenManager:
 
     def generateToken(self, username):
         uid = uuid4()
-        t = time()
+        t = math.trunc(time())
 
         active = self.findTokenByUsername(username)
 

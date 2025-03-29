@@ -1,16 +1,14 @@
+from dataclasses import dataclass
 from time import time
+import uuid
 
-
+@dataclass(frozen=True)
 class Token:
-    def __init__(self, username, uid, t):
-        self.username = username
-        self.uid = uid
-        self.time = t
+    username: str
+    uid : uuid
+    time: int
 
     def isValid(self):
         elapsed = self.time - time()
-
-        if elapsed > 86400:
-            return False
-        else:
-            return True
+        return elapsed < 86400 # 86400 -> amount of seconds 24 hours
+                               # we only want a token to be valid for 24 hours

@@ -1,4 +1,4 @@
-from client.Application.Account.Frame import Frames
+from client.Application.Account import Frames
 
 import customtkinter as ctk
 import math
