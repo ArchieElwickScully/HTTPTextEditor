@@ -81,4 +81,17 @@ im so stupid i fully wrote this then started to do it the wrong way
 fun challenge then ig lmao
 tbf it kinda makes more sense to have the ui etc in the main thread and the rh in the background kinda thing
 
+
+
+todo now
+
+end to end encryption
+    okay
+    
+    serverside
+        when we create token we also create encryption key and store it in token with also public key
+        we send pub key over w token
+    clientside
+        we do same but send pub key w login request, this is then also stored in token class serverside
+        also return an encrypted token
 """
