@@ -8,6 +8,11 @@ class Token:
     uid : uuid
     time: int
 
+    userPrivKey: str
+    #userPubKey: str
+    clientPubKey: str
+
+
     def isValid(self):
         elapsed = self.time - time()
         return elapsed < 86400 # 86400 -> amount of seconds 24 hours

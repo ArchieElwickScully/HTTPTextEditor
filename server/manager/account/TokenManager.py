@@ -1,5 +1,6 @@
 import math
 
+from server.manager.account.Encryption import Encryption
 from server.manager.account.Token import Token
 
 from uuid import uuid4
@@ -10,7 +11,7 @@ class TokenManager:
     def __init__(self):
         self.activetokens = []
 
-    def generateToken(self, username):
+    def generateToken(self, username, clientPubKey, userPrivateKey):
         uid = uuid4()
         t = math.trunc(time())
 
@@ -19,7 +20,9 @@ class TokenManager:
         if active is not None:
             self.removeToken(active)
 
-        token = Token(username, uid, t)
+        token = Token(username = username, uid = uid, time = t,
+                      userPrivKey = userPrivateKey, clientPubKey = clientPubKey)
+
         self.addToken(token)
 
         return uid

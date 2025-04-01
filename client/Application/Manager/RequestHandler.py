@@ -4,10 +4,13 @@ import json
 
 import multiprocessing
 
+from client.Application.Manager.Encryption import Encryption
+
 
 class RequestHandler(multiprocessing.Process):
     def __init__(self, queue, outQueue):
         super().__init__()
+        self.encryption = Encryption()
         self.token = ''
 
         self.queue = queue
