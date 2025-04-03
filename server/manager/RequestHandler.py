@@ -53,7 +53,7 @@ class RequestHandler:
                 print(clientPubKey)
 
                 writtenResponse = 'Succes. Sign In complete'
-                encToken = self.encryption.encryptForClient(clientPubKey, token)
+                encToken = self.encryption.encryptForClient(clientPubKey, str(token))
                 encPubKey = self.encryption.encryptForClient(clientPubKey, userPublicKey)
 
                 response = str(Response(writtenResponse=writtenResponse, token=encToken, serverPubKey=encPubKey))
@@ -65,8 +65,8 @@ class RequestHandler:
                 print(f'Account sign in failure on: {args["username"]}')
                 return 400, str(Response('Sign In error')) # make more specific later, username does not exist, password incorrect etc
 
-        except:
-            print('unknown error')
+        except Exception as e:
+            print(e)
             return 400, str(Response('Sign In error'))
 
 """

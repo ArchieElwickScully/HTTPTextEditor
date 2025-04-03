@@ -13,26 +13,33 @@ class Encryption:
             print('Cannot encrypt -> not yet recieved public key from server (this should never happen)')
             return
 
-        RSACypherObj = PKCS1_OAEP.new(self.serverPublicKey)
         dataBytes = data.encode('utf-8')
+
+        RSACypherObj = PKCS1_OAEP.new(self.serverPublicKey)
         encData = RSACypherObj.encrypt(dataBytes)
-        return encData
+        return Encryption.exportData(encData)
 
     def decryptFromServer(self, data):
+        data = Encryption.importData(data)
+
         RSACypherObj = PKCS1_OAEP.new(self.key)
         decData = RSACypherObj.decrypt(data)
-        return decData
+        return decData.decode('utf-8')
 
-    def exportData(self, data):
-        b64encode(data).decode('utf-8')
-
-    def registerServerPublicKeyFromB64String(self, s):
-        decodedKey = b64decode(s.encode('utf-8'))
-        #bytesKey = k.encode('utf-8')
+    def importSeverPublicKey(self, s):
+        decodedKey = Encryption.importData(s)
         self.serverPublicKey = RSA.importKey(decodedKey)
 
     def exportClientPublicKeyForServer(self):
         return b64encode(self.clientPublicKey).decode('utf-8')
+
+    @staticmethod
+    def exportData(data):
+        return b64encode(data).decode('utf-8')
+
+    @staticmethod
+    def importData(data):
+        return b64decode(data.encode('utf-8'))
 
 # we could be validating encrypted data but sending across aes keys and nonce etc will just take too much
 # bandwidth and is ever so slightly overkill for the time being due to time constraints
@@ -44,9 +51,9 @@ if __name__ == '__main__':
 
     encryp = Encryption()
     encryp.key = key
-    encryp.registerServerPublicKeyFromB64String(pubKey)
+    encryp.importSeverPublicKey(pubKey)
     encrypted = encryp.encryptForServer('hi')
-    print(b64encode(encrypted))
+    print(encrypted)
 
     decrypted = encryp.decryptFromServer(encrypted)
     print(decrypted)

@@ -1,42 +1,48 @@
-from Cryptodome.Cipher import PKCS1_OAEP
-from Cryptodome.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.PublicKey import RSA
 from base64 import b64encode, b64decode
 
 class Encryption:
     def __init__(self):
         pass
 
-    def encryptForClient(self, clientPubKey, data):
-        key = self.returnKeyFromb64String(clientPubKey)
+    @staticmethod
+    def encryptForClient(clientPubKey, data):
+        key = Encryption.importKey(clientPubKey)
+        data = Encryption.importData(data)
 
         RSACypherObj = PKCS1_OAEP.new(key)
-        dataBytes = data.encode('utf-8')
-        encData = RSACypherObj.encrypt(dataBytes)
-        return encData
+        encData = RSACypherObj.encrypt(data)
+        return Encryption.exportData(encData)
 
-    def decryptFromClient(self, userPrivateKey ,data):
-        key = self.returnKeyFromb64String(userPrivateKey)
+    @staticmethod
+    def decryptFromClient(userPrivateKey ,data):
+        key = Encryption.importKey(userPrivateKey)
+        data = Encryption.importData(data)
 
         RSACypherObj = PKCS1_OAEP.new(key)
         decData = RSACypherObj.decrypt(data)
-        return decData
+        return decData.decode('utf-8')
 
-    def returnKeyFromb64String(self, s):
-        decodedKey = b64decode(s.encode('utf-8'))
-        #bytesKey = k.encode('utf-8')
+    @staticmethod
+    def genUserKeys():
+        k = RSA.generate(2048)
+        public, private = (Encryption.exportData(k.export_key()),
+                           Encryption.exportData(k.public_key().export_key()))
+        return public, private
+
+    @staticmethod
+    def importKey(s):
+        decodedKey = Encryption.importData(s)
         return RSA.importKey(decodedKey)
 
-    def returnDataFromb64String(self, dat):
-        return b64decode(dat.encode('utf-8'))
+    @staticmethod
+    def importData(data):
+        return b64decode(data.encode('utf-8'))
 
-    def exportForTransmission(self, key):
-        return b64encode(key).decode('utf-8')
-
-    def genUserKeys(self):
-        k = RSA.generate(2048)
-        public, private = (b64encode(k.export_key()).decode('utf-8'),
-                           b64encode(k.public_key().export_key()).decode('utf-8'))
-        return public, private
+    @staticmethod
+    def exportData(data):
+        return b64encode(data).decode('utf-8')
 
 
 """

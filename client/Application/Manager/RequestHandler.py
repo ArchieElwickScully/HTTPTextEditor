@@ -10,7 +10,7 @@ from client.Application.Manager.Encryption import Encryption
 class RequestHandler(multiprocessing.Process):
     def __init__(self, queue, outQueue):
         super().__init__()
-        self.encryption = Encryption()
+        self.encryption = None # fixes pickling error
         self.token = ''
 
         self.queue = queue
@@ -19,6 +19,7 @@ class RequestHandler(multiprocessing.Process):
 
 
     def run(self):
+        self.encryption = Encryption()
         while True:
 
             while not self.queue.empty():
