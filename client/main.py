@@ -11,7 +11,7 @@ class App:
         self.outputQueue = outputQueue
 
         ctk.set_appearance_mode('dark')
-        ctk.FontManager.load_font('Myriad Pro Light.ttf')
+        #ctk.FontManager.load_font('Myriad Pro Light.ttf')
 
         thread = threading.Thread(target=self.outputThread, daemon=True) # im sure theres probably a better way to do
         thread.start()                                                   # this but im tired and running out of time

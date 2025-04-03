@@ -10,7 +10,7 @@ class InfoBox(ctk.CTkToplevel):
         super().__init__(**kwargs)
         self.iconify()
 
-        self.transparent = 'transparent'
+        self.transparent = 'red'
 
         if platform.lower() == 'darwin':
             self.transparent = 'systemTransparent'

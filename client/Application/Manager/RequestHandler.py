@@ -34,18 +34,20 @@ class RequestHandler(multiprocessing.Process):
         password = hashobj.hexdigest()
 
         sendData = {'command': command,
-                    "args": {'username': username, 'password': password}}
+                    "args": {'username': username, 'password': password,
+                             'clientPubKey': self.encryption.exportClientPublicKeyForServer()}}
 
         r = requests.post(self.server, json=sendData)
 
         response = json.loads(r.text)
         textResponse = response['writtenResponse']
-        token = response['token']
 
-        if token != 'None':
-            self.token = token
-            self.outQueue.put((textResponse, True))
-            return
+        if 'encrypted' in response.keys():
+            encToken = response['encrypted']['token']
+            encServerPubKey = response['encrypted']['serverPublicKey']
+
+            print(encToken)
+            print(encServerPubKey)
 
         self.outQueue.put((textResponse, False))
 

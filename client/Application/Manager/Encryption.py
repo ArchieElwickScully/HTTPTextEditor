@@ -23,6 +23,9 @@ class Encryption:
         decData = RSACypherObj.decrypt(data)
         return decData
 
+    def exportData(self, data):
+        b64encode(data).decode('utf-8')
+
     def registerServerPublicKeyFromB64String(self, s):
         decodedKey = b64decode(s.encode('utf-8'))
         #bytesKey = k.encode('utf-8')
