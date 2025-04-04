@@ -45,10 +45,10 @@ class RequestHandler(multiprocessing.Process):
 
         if 'encrypted' in response.keys():
             encToken = response['encrypted']['token']
-            encServerPubKey = response['encrypted']['serverPublicKey']
+            serverPubKey = response['encrypted']['serverPublicKey']
 
-            print(encToken)
-            print(encServerPubKey)
+            self.encryption.importSeverPublicKey(serverPubKey)
+            print(self.encryption.decryptFromServer(encToken))
 
         self.outQueue.put((textResponse, False))
 

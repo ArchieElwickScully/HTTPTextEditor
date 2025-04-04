@@ -24,7 +24,7 @@ class Encryption:
 
         RSACypherObj = PKCS1_OAEP.new(self.key)
         decData = RSACypherObj.decrypt(data)
-        return decData.decode('utf-8')
+        return decData
 
     def importSeverPublicKey(self, s):
         decodedKey = Encryption.importData(s)
@@ -63,5 +63,8 @@ this works now so we essentially need the same in server
 
 when we send login req we send the client pub key with it
 once validated and have status code 200 we now decode every request with out priv key
+
+
+this does not work, how we gonn
 
 """

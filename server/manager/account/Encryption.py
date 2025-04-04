@@ -9,7 +9,7 @@ class Encryption:
     @staticmethod
     def encryptForClient(clientPubKey, data):
         key = Encryption.importKey(clientPubKey)
-        data = Encryption.importData(data)
+        data = data.encode('utf-8')
 
         RSACypherObj = PKCS1_OAEP.new(key)
         encData = RSACypherObj.encrypt(data)
@@ -27,8 +27,8 @@ class Encryption:
     @staticmethod
     def genUserKeys():
         k = RSA.generate(2048)
-        public, private = (Encryption.exportData(k.export_key()),
-                           Encryption.exportData(k.public_key().export_key()))
+        public, private = (Encryption.exportData(k.public_key().export_key()),
+                           Encryption.exportData(k.export_key()))
         return public, private
 
     @staticmethod

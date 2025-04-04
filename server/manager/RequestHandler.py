@@ -49,14 +49,13 @@ class RequestHandler:
             if self.dbm.validateAccount(args['username'], args['password']):
                 userPublicKey, userPrivateKey = self.encryption.genUserKeys()
                 clientPubKey = args['clientPubKey']
+
                 token = self.tm.generateToken(args['username'], clientPubKey, userPrivateKey)
-                print(clientPubKey)
+                encToken = self.encryption.encryptForClient(clientPubKey, str(token))
 
                 writtenResponse = 'Succes. Sign In complete'
-                encToken = self.encryption.encryptForClient(clientPubKey, str(token))
-                encPubKey = self.encryption.encryptForClient(clientPubKey, userPublicKey)
 
-                response = str(Response(writtenResponse=writtenResponse, token=encToken, serverPubKey=encPubKey))
+                response = str(Response(writtenResponse=writtenResponse, token=encToken, serverPubKey=userPublicKey))
 
                 print(f'successful sign into {args["username"]}')
                 return 200, response
