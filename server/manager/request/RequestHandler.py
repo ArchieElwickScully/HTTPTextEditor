@@ -1,9 +1,9 @@
 import json
 
 from server.manager.account.DatabaseManager import DatabaseManager
-from server.manager.account.Encryption import Encryption
+from server.manager.request.Encryption import Encryption
 from server.manager.account.TokenManager import TokenManager
-from server.manager.ResponseBuilder import Response
+from server.manager.request.ResponseBuilder import Response
 
 
 class RequestHandler:

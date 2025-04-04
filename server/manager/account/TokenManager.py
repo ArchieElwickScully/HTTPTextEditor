@@ -1,6 +1,5 @@
 import math
 
-from server.manager.account.Encryption import Encryption
 from server.manager.account.Token import Token
 
 from uuid import uuid4
