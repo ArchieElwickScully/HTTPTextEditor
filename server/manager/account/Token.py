@@ -8,10 +8,7 @@ class Token:
     uid : uuid
     time: int
 
-    userPrivKey: str
-    #userPubKey: str
-    clientPubKey: str
-
+    SessionAESKey: bytes
 
     def isValid(self):
         elapsed = self.time - time()

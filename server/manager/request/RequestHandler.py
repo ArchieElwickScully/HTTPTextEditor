@@ -47,15 +47,16 @@ class RequestHandler:
     def signIn(self, args):
         try:
             if self.dbm.validateAccount(args['username'], args['password']):
-                userPublicKey, userPrivateKey = self.encryption.genUserKeys()
-                clientPubKey = args['clientPubKey']
 
-                token = self.tm.generateToken(args['username'], clientPubKey, userPrivateKey)
-                encToken = self.encryption.encryptForClient(clientPubKey, str(token))
+                clientPubKey = args['clientPubKey']
+                sessionAESKey, encSessionAESKey = self.encryption.genSessionKeyAndEnc(clientPubKey)
+
+                token = self.tm.generateToken(args['username'], sessionAESKey)
+                cipher = self.encryption.encryptData(sessionAESKey, str(token))
 
                 writtenResponse = 'Succes. Sign In complete'
 
-                response = str(Response(writtenResponse=writtenResponse, token=encToken, serverPubKey=userPublicKey))
+                response = str(Response(writtenResponse=writtenResponse, token=cipher, sessionKey=encSessionAESKey))
 
                 print(f'successful sign into {args["username"]}')
                 return 200, response

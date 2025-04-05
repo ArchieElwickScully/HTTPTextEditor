@@ -10,7 +10,7 @@ class TokenManager:
     def __init__(self):
         self.activetokens = []
 
-    def generateToken(self, username, clientPubKey, userPrivateKey):
+    def generateToken(self, username, SessionAESKey):
         uid = uuid4()
         t = math.trunc(time())
 
@@ -20,7 +20,7 @@ class TokenManager:
             self.removeToken(active)
 
         token = Token(username = username, uid = uid, time = t,
-                      userPrivKey = userPrivateKey, clientPubKey = clientPubKey)
+                      SessionAESKey = SessionAESKey)
 
         self.addToken(token)
 

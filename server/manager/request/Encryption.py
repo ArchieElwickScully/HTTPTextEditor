@@ -1,20 +1,24 @@
-from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Cipher import PKCS1_OAEP, AES
 from Crypto.PublicKey import RSA
 from base64 import b64encode, b64decode
+
+from Crypto.Random import get_random_bytes
+
 
 class Encryption:
     def __init__(self):
         pass
 
     @staticmethod
-    def encryptForClient(clientPubKey, data):
-        key = Encryption.importKey(clientPubKey)
+    def encryptData(sessionKey, data):
         data = data.encode('utf-8')
 
-        RSACypherObj = PKCS1_OAEP.new(key)
-        encData = RSACypherObj.encrypt(data)
-        return Encryption.exportData(encData)
+        AESCipher = AES.new(sessionKey, AES.MODE_EAX)
+        ciphertext, tag = AESCipher.encrypt_and_digest(data)
 
+        return (Encryption.exportData(ciphertext),                        # export aes nonce, ciphertext and tag
+                Encryption.exportData(AESCipher.nonce), Encryption.exportData(tag)) # could look more prettier by having exp
+                                                                               # take more optional args but its good
     @staticmethod
     def decryptFromClient(userPrivateKey ,data):
         key = Encryption.importKey(userPrivateKey)
@@ -25,11 +29,13 @@ class Encryption:
         return decData.decode('utf-8')
 
     @staticmethod
-    def genUserKeys():
-        k = RSA.generate(2048)
-        public, private = (Encryption.exportData(k.public_key().export_key()),
-                           Encryption.exportData(k.export_key()))
-        return public, private
+    def genSessionKeyAndEnc(clientpublicKey):
+        clientRSAKey = Encryption.importKey(clientpublicKey)    # import client rsa key
+        AESKey = get_random_bytes(16)
+
+        RSACypherObj = PKCS1_OAEP.new(clientRSAKey)             # new rsa obj to encrypt aes key
+        encKey = RSACypherObj.encrypt(AESKey)                   # encrypting aes key so we can
+        return AESKey, Encryption.exportData(encKey)            # returning both keys to add normal one to token class
 
     @staticmethod
     def importKey(s):
@@ -44,6 +50,27 @@ class Encryption:
     def exportData(data):
         return b64encode(data).decode('utf-8')
 
+    '''
+    depreciated methods incase need for future ref
+    
+    @staticmethod
+    def RSAencryptForClient(clientPubKey, data):
+        key = Encryption.importKey(clientPubKey)
+        data = data.encode('utf-8')
+
+        RSACypherObj = PKCS1_OAEP.new(key)
+        encData = RSACypherObj.encrypt(data)
+        return Encryption.exportData(encData)
+
+    '''
+
+if __name__ == '__main__':
+    e = Encryption()
+    AESKey = get_random_bytes(16)
+
+    dat = 'hello'
+
+    print(e.encryptData(sessionKey = AESKey, data = dat))
 
 """
 e = Encryption()

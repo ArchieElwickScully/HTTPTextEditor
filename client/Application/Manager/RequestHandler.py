@@ -26,7 +26,8 @@ class RequestHandler(multiprocessing.Process):
                 task = self.queue.get()
                 match task['type']:
                     case 'account':
-                        self.doAccountRequest(task['data']['command'], task['data']['username'], task['data']['password'])
+                        self.doAccountRequest(task['data']['command'],
+                                              task['data']['username'], task['data']['password'])
                     case _:
                         print(f'request handler error on {task}')
 
@@ -34,9 +35,13 @@ class RequestHandler(multiprocessing.Process):
         hashobj = hashlib.sha256(str.encode(password))
         password = hashobj.hexdigest()
 
-        sendData = {'command': command,
-                    "args": {'username': username, 'password': password,
-                             'clientPubKey': self.encryption.exportClientPublicKeyForServer()}}
+        sendData = {
+            'command': command,
+            "args": {
+                'username': username, 'password': password,
+                'clientPubKey': self.encryption.exportClientPublicKeyForServer()
+            }
+        }
 
         r = requests.post(self.server, json=sendData)
 
@@ -44,11 +49,11 @@ class RequestHandler(multiprocessing.Process):
         textResponse = response['writtenResponse']
 
         if 'encrypted' in response.keys():
-            encToken = response['encrypted']['token']
-            serverPubKey = response['encrypted']['serverPublicKey']
+            tokenCipher = response['encrypted']['token']
+            sessionKey = response['encrypted']['sessionKey']
 
-            self.encryption.importSeverPublicKey(serverPubKey)
-            print(self.encryption.decryptFromServer(encToken))
+            self.encryption.importSessionKey(sessionKey)
+            print(self.encryption.decrypt(tokenCipher))
 
         self.outQueue.put((textResponse, False))
 

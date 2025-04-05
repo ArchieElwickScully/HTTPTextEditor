@@ -2,10 +2,10 @@ import json
 
 
 class Response:
-    def __init__(self, writtenResponse, token=None, serverPubKey=None):
+    def __init__(self, writtenResponse, token=None, sessionKey=None):
         self.template = {
             'token': token,
-            'serverPublicKey': serverPubKey
+            'sessionKey': sessionKey
         }
 
         self.response = {
