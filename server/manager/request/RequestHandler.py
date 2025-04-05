@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from server.manager.account.DatabaseManager import DatabaseManager
 from server.manager.request.Encryption import Encryption
@@ -14,24 +15,28 @@ class RequestHandler:
 
         self.dbm.createTable()
 
-        self.commands = {"CreateAccount": self.createAccount, "SignIn": self.signIn}
+        self.commands = {
+            "CreateAccount": self.createAccount,
+            "SignIn": self.signIn
+        }
+
         """
         Create Account : [username, password]
         SignIn : [username, password, clientPubKey] -> clientPubKey encoded with b64 then decoded to utf-8
         """
 
-    def handlePost(self, data):
-        d = json.loads(data)
+    def handlePost(self, data: str) -> (int, str):
+        d: dict = json.loads(data)
 
-        c = d['command']
+        command = d['command']
 
-        if c in self.commands:
-            return self.commands[c](d['args'])
+        if command in self.commands:
+            return self.commands[command](d['args'])
         else:
             print("returned command does not exist")
             return 400, str(Response("Command does not exist"))
 
-    def createAccount(self, args):
+    def createAccount(self, args: dict) -> (int, str):
         try:
             if self.dbm.nameExists(args['username']):
                 return 400, str(Response("Account creation error, Username already taken"))
@@ -44,14 +49,16 @@ class RequestHandler:
         except: # exception too broad but i will fix later
             return 400, str(Response("Account creation error"))
 
-    def signIn(self, args):
+    def signIn(self, args: dict) -> (int, str):
         try:
             if self.dbm.validateAccount(args['username'], args['password']):
 
-                clientPubKey = args['clientPubKey']
+                clientPubKey: str = args['clientPubKey']
+
+                sessionAESKey: bytes; encSessionAESKey: str
                 sessionAESKey, encSessionAESKey = self.encryption.genSessionKeyAndEnc(clientPubKey)
 
-                token = self.tm.generateToken(args['username'], sessionAESKey)
+                token: uuid = self.tm.generateToken(args['username'], sessionAESKey)
                 cipher = self.encryption.encryptData(sessionAESKey, str(token))
 
                 writtenResponse = 'Succes. Sign In complete'

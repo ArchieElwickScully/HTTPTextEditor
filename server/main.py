@@ -26,7 +26,7 @@ class HTTP(BaseHTTPRequestHandler):
         self.wfile.write(bytes(response, encoding='utf-8'))
 
 
-def main():
+if __name__ == "__main__":
     PORT = 8000
 
     server = HTTPServer(("", PORT), HTTP)
@@ -36,6 +36,3 @@ def main():
     server.serve_forever()
     server.server_close()
 
-
-if __name__ == "__main__":
-    main()

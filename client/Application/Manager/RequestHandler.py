@@ -2,14 +2,15 @@ import requests
 import hashlib
 import json
 
-import multiprocessing
+from multiprocessing import Process, Queue
 
 from client.Application.Manager.Encryption import Encryption
 
 
-class RequestHandler(multiprocessing.Process):
-    def __init__(self, queue, outQueue):
+class RequestHandler(Process):
+    def __init__(self, queue: Queue, outQueue: Queue):
         super().__init__()
+
         self.encryption = None # fixes pickling error
         self.token = ''
 
@@ -20,19 +21,23 @@ class RequestHandler(multiprocessing.Process):
 
     def run(self):
         self.encryption = Encryption()
-        while True:
 
+        while True:
             while not self.queue.empty():
-                task = self.queue.get()
+                task: dict = self.queue.get()
+
                 match task['type']:
                     case 'account':
-                        self.doAccountRequest(task['data']['command'],
-                                              task['data']['username'], task['data']['password'])
+                        self.doAccountRequest(
+                            task['data']['command'],
+                            task['data']['username'], task['data']['password']
+                        )
+
                     case _:
                         print(f'request handler error on {task}')
 
-    def doAccountRequest(self, command, username, password):
-        hashobj = hashlib.sha256(str.encode(password))
+    def doAccountRequest(self, command: str, username: str, password: str):
+        hashobj: hash = hashlib.sha256(str.encode(password))
         password = hashobj.hexdigest()
 
         sendData = {
@@ -45,12 +50,12 @@ class RequestHandler(multiprocessing.Process):
 
         r = requests.post(self.server, json=sendData)
 
-        response = json.loads(r.text)
-        textResponse = response['writtenResponse']
+        response: dict = json.loads(r.text)
+        textResponse: str = response['writtenResponse']
 
         if 'encrypted' in response.keys():
-            tokenCipher = response['encrypted']['token']
-            sessionKey = response['encrypted']['sessionKey']
+            tokenCipher: tuple[str, str, str] = response['encrypted']['token']
+            sessionKey: str = response['encrypted']['sessionKey']
 
             self.encryption.importSessionKey(sessionKey)
             print(self.encryption.decrypt(tokenCipher))

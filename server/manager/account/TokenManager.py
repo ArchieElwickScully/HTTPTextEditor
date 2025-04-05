@@ -1,33 +1,36 @@
 import math
+import uuid
 
 from server.manager.account.Token import Token
-
-from uuid import uuid4
 from time import time
 
 
 class TokenManager:
     def __init__(self):
-        self.activetokens = []
+        self.activetokens: list[Token] = []
 
-    def generateToken(self, username, SessionAESKey):
-        uid = uuid4()
-        t = math.trunc(time())
+    def generateToken(self, username: str, SessionAESKey: bytes) -> uuid:
+        uid: uuid = uuid.uuid4()
+        currentTime = math.trunc(time())
 
-        active = self.findTokenByUsername(username)
+        active: Token = self.findTokenByUsername(username)
 
         if active is not None:
             self.removeToken(active)
 
-        token = Token(username = username, uid = uid, time = t,
-                      SessionAESKey = SessionAESKey)
+        token = Token(
+            username = username,
+            uid = uid,
+            time = currentTime,
+            SessionAESKey = SessionAESKey
+        )
 
         self.addToken(token)
 
         return uid
 
-    def validateToken(self, uid):
-        token = self.findTokenByUID(uid)
+    def validateToken(self, uid: uuid):
+        token: Token = self.findTokenByUID(uid)
 
         if token is None:
             return False
@@ -38,21 +41,22 @@ class TokenManager:
             self.removeToken(token)
             return False
 
-    def findTokenByUsername(self, username):
-        for t in self.activetokens:
-            if t.username == username:
-                return t
+    def findTokenByUsername(self, username: str) -> Token | None:
+        for token in self.activetokens:
+            if token.username == username:
+                return token
 
         return None
 
-    def findTokenByUID(self, uid):
-        for t in self.activetokens:
-            if t.uid == uid:
-                return t
+    def findTokenByUID(self, uid: uuid) -> Token | None:
+        for token in self.activetokens:
+            if token.uid == uid:
+                return token
+
         return None
 
-    def addToken(self, token):
+    def addToken(self, token: Token):
         self.activetokens.append(token)
 
-    def removeToken(self, token):
+    def removeToken(self, token: Token):
         self.activetokens.remove(token)

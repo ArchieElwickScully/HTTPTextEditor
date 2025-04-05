@@ -1,39 +1,46 @@
 from Crypto.Cipher import PKCS1_OAEP, AES
+from Crypto.PublicKey.RSA import RsaKey
 from Crypto.PublicKey import RSA
+
 from base64 import b64encode, b64decode
+
+
 
 class Encryption:
     def __init__(self):
-        self.RSAkey = RSA.generate(2048)                                 # our key for decrypting data from server
-        self.clientPublicKey = self.RSAkey.publickey().export_key()      # our key to send to server to encrypt requests
+        self.RSAkey: RsaKey = RSA.generate(2048)                                 # our key for decrypting data from server
+        self.clientPublicKey: bytes = self.RSAkey.publickey().export_key()      # our key to send to server to encrypt requests
         self.sessionKey = None                                           # AES session key from server
 
-    def decrypt(self, cipher):
+    def decrypt(self, cipher: tuple[str, str, str]) -> str:
         ciphertext, nonce, tag = cipher
-        ciphertext, nonce, tag = (Encryption.importData(ciphertext),
-                                  Encryption.importData(nonce), Encryption.importData(tag))
+        ciphertext, nonce, tag = (
+            Encryption.importData(ciphertext),
+            Encryption.importData(nonce),
+            Encryption.importData(tag)
+        )
 
         cipher_aes = AES.new(self.sessionKey, AES.MODE_EAX, nonce)
-        decData = cipher_aes.decrypt_and_verify(ciphertext, tag)
+        decData: bytes = cipher_aes.decrypt_and_verify(ciphertext, tag)
 
         return decData.decode('utf-8')
 
-    def importSessionKey(self, k):
-        k = Encryption.importData(k)
+    def importSessionKey(self, k: str):
+        k: bytes = Encryption.importData(k)
 
         RSACypherObj = PKCS1_OAEP.new(self.RSAkey)                     # new RSA obj to decrypt the AES session key
-        decKey = RSACypherObj.decrypt(k)
+        decKey: bytes = RSACypherObj.decrypt(k)
         self.sessionKey = decKey                                       # im actually not sure if i should be storing
                                                                        # this as bytes or storing an aes cipher obj
-    def exportClientPublicKeyForServer(self):
-        return b64encode(self.clientPublicKey).decode('utf-8')
+    def exportClientPublicKeyForServer(self) -> str:
+        return Encryption.exportData(self.clientPublicKey)
 
     @staticmethod
-    def exportData(data):
+    def exportData(data: bytes) -> str:
         return b64encode(data).decode('utf-8')
 
     @staticmethod
-    def importData(data):
+    def importData(data: str) -> bytes:
         return b64decode(data.encode('utf-8'))
 
     '''

@@ -10,44 +10,47 @@ class Encryption:
         pass
 
     @staticmethod
-    def encryptData(sessionKey, data):
-        data = data.encode('utf-8')
+    def encryptData(sessionKey: bytes, data: str) -> (str, str, str):
+        data: bytes = data.encode('utf-8')
 
         AESCipher = AES.new(sessionKey, AES.MODE_EAX)
         ciphertext, tag = AESCipher.encrypt_and_digest(data)
 
-        return (Encryption.exportData(ciphertext),                        # export aes nonce, ciphertext and tag
-                Encryption.exportData(AESCipher.nonce), Encryption.exportData(tag)) # could look more prettier by having exp
-                                                                               # take more optional args but its good
+        return (
+            Encryption.exportData(ciphertext),                        # export aes nonce, ciphertext and tag
+            Encryption.exportData(AESCipher.nonce),                   # could look more prettier by having exp
+            Encryption.exportData(tag)                                # take more optional args but its good
+        )
+
     @staticmethod
-    def decryptFromClient(userPrivateKey ,data):
+    def decryptFromClient(userPrivateKey: str, data: str) -> str:
         key = Encryption.importKey(userPrivateKey)
-        data = Encryption.importData(data)
+        data: bytes = Encryption.importData(data)
 
         RSACypherObj = PKCS1_OAEP.new(key)
         decData = RSACypherObj.decrypt(data)
         return decData.decode('utf-8')
 
     @staticmethod
-    def genSessionKeyAndEnc(clientpublicKey):
+    def genSessionKeyAndEnc(clientpublicKey: str) -> (bytes, str):
         clientRSAKey = Encryption.importKey(clientpublicKey)    # import client rsa key
-        AESKey = get_random_bytes(16)
+        AESKey: bytes = get_random_bytes(16)
 
         RSACypherObj = PKCS1_OAEP.new(clientRSAKey)             # new rsa obj to encrypt aes key
         encKey = RSACypherObj.encrypt(AESKey)                   # encrypting aes key so we can
         return AESKey, Encryption.exportData(encKey)            # returning both keys to add normal one to token class
 
     @staticmethod
-    def importKey(s):
-        decodedKey = Encryption.importData(s)
-        return RSA.importKey(decodedKey)
+    def importKey(s: str):
+        decodedKey: bytes = Encryption.importData(s)
+        return RSA.import_key(decodedKey)
 
     @staticmethod
-    def importData(data):
+    def importData(data: str) -> bytes:
         return b64decode(data.encode('utf-8'))
 
     @staticmethod
-    def exportData(data):
+    def exportData(data: bytes) -> str:
         return b64encode(data).decode('utf-8')
 
     '''

@@ -10,14 +10,14 @@ class DatabaseManager:
 
         self.connection.commit()
 
-    def addAccount(self, username, password):
+    def addAccount(self, username: str, password: str):
         entities = (username, password)
 
         self.cur.execute("INSERT INTO accounts(username, password) VALUES(?, ?)", entities)
 
         self.connection.commit()
 
-    def nameExists(self, username):
+    def nameExists(self, username: str) -> bool:
         self.cur.execute("SELECT EXISTS(SELECT 1 FROM accounts WHERE username=? LIMIT 1)", (username,))
 
         record = self.cur.fetchone()
@@ -27,7 +27,7 @@ class DatabaseManager:
         else:
             return False
 
-    def validateAccount(self, username, password):
+    def validateAccount(self, username: str, password: str) -> bool:
         self.cur.execute("SELECT password FROM accounts WHERE username = ?", (username,))
 
         record = self.cur.fetchall()

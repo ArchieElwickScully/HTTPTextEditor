@@ -1,14 +1,15 @@
 from client.Application.Manager.RequestHandler import RequestHandler
 from client.Application.Account.AccountWindow import AccountWindow
+from multiprocessing import Queue
+
 
 import customtkinter as ctk
 import threading
-import multiprocessing
 
 class App:
-    def __init__(self, requestQueue, outputQueue):
-        self.requestQueue = requestQueue
-        self.outputQueue = outputQueue
+    def __init__(self, requestQueue: Queue, outputQueue: Queue):
+        self.requestQueue: Queue = requestQueue
+        self.outputQueue: Queue = outputQueue
 
         ctk.set_appearance_mode('dark')
         ctk.FontManager.load_font('Myriad Pro Light.ttf')
@@ -34,8 +35,8 @@ class App:
 
 
 if __name__ == '__main__':
-    rq = multiprocessing.Queue()
-    oq = multiprocessing.Queue()
+    rq = Queue()
+    oq = Queue()
 
     rh = RequestHandler(rq, oq)
     rh.start()

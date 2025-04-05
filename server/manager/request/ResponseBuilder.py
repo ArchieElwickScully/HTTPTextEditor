@@ -17,7 +17,7 @@ class Response:
             self.response['encrypted'] = self.encrypted
 
 
-    def getDict(self):
+    def getDict(self) -> dict:
         d = {}
 
         for key in self.template:

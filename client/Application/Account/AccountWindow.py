@@ -1,35 +1,38 @@
-from client.Application.Account import Frames
+from multiprocessing.queues import Queue
+from tkinter import Event
 
 import customtkinter as ctk
 from sys import platform
 import math
 
 from client.Application.Account.InfoBox.InfoBox import InfoBox
+from client.Application.Account import Frames
 
 
 class AccountWindow(ctk.CTk):
-    def __init__(self, requestQueue, **kwargs):
+    def __init__(self, requestQueue: Queue, **kwargs):
         super().__init__(**kwargs)
         self.alerts = InfoBox()
 
         # vars
-        self.requestQueue = requestQueue
+        self.requestQueue: Queue = requestQueue
         self.lastClick = (0, 0)
         self.HEIGHT = 400
         self.WIDTH = 650
-        self.token = ''
 
         # window attributes etc
         self.geometry('650x400')
         self.overrideredirect(True)
 
-        if platform.lower() == 'darwin':
-            self.configure(fg_color='systemTransparent')
-            self.wm_attributes("-transparent", True)
-        elif platform.lower() == 'windows':
-            self.wm_attributes("-topmost", True)
-            self.wm_attributes("-disabled", True)
-            self.wm_attributes("-transparentcolor", "white")
+        match platform.lower():
+            case 'darwin':
+                self.configure(fg_color='systemTransparent')
+                self.wm_attributes("-transparent", True)
+            case 'windows':
+                self.wm_attributes("-topmost", True)
+                self.wm_attributes("-disabled", True)
+                self.wm_attributes("-transparentcolor", "white")
+
 
         self.centre()
 
@@ -45,14 +48,14 @@ class AccountWindow(ctk.CTk):
         self.mainFrame.grid(row=0, column=0)
 
     # window methods
-    def drag(self, e):
+    def drag(self, e: Event):
         diff = (e.x_root - self.lastClick[0],
                 e.y_root - self.lastClick[1])
 
         # print(diff)
         self.geometry(f'+{diff[0]}+{diff[1]}')
 
-    def registerClick(self, e):
+    def registerClick(self, e: Event):
         self.lastClick = (e.x_root - self.winfo_rootx(),
                           e.y_root - self.winfo_rooty())
         # print(self.lastClick)
