@@ -8,9 +8,9 @@ from base64 import b64encode, b64decode
 
 class Encryption:
     def __init__(self):
-        self.RSAkey: RsaKey = RSA.generate(2048)                                 # our key for decrypting data from server
-        self.clientPublicKey: bytes = self.RSAkey.publickey().export_key()      # our key to send to server to encrypt requests
-        self.sessionKey = None                                           # AES session key from server
+        self.RSAkey: RsaKey = RSA.generate(2048)                              # our key for decrypting data from server
+        self.clientPublicKey: bytes = self.RSAkey.publickey().export_key()    # our key to send to server to enc token
+        self.sessionKey = None                                                # AES session key from server
 
     def decrypt(self, cipher: tuple[str, str, str]) -> str:
         ciphertext, nonce, tag = cipher
@@ -37,8 +37,8 @@ class Encryption:
 
     @staticmethod
     def exportData(data: bytes) -> str:
-        return b64encode(data).decode('utf-8')
-
+        return b64encode(data).decode('utf-8')      # we do this to convert the data to string for transmission because
+                                                    # the raw bytes cant be directly decoded to utf-8 properly and
     @staticmethod
     def importData(data: str) -> bytes:
         return b64decode(data.encode('utf-8'))

@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from time import time
 import uuid
 
-@dataclass(frozen=True)
-class Token:
+@dataclass(frozen=True)     # defining the class as a dataclass, frozen makes it immutable so no accidental
+class Token:                # (or intentional and malicious) changing of variables in the class can cause issues
     username: str
     uid : uuid
     time: int
