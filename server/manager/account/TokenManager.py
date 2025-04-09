@@ -13,9 +13,9 @@ class TokenManager:
         uid: uuid = uuid.uuid4()
         currentTime = math.trunc(time())
 
-        active: Token = self.findTokenByUsername(username)
-
-        if active is not None:
+        active: Token = self.findTokenByUsername(username)  # all we are doing here is essentially checking
+                                                            # there isnt already an active token for this user and if
+        if active is not None:                              # there is we just remove it and replace it
             self.removeToken(active)
 
         token = Token(

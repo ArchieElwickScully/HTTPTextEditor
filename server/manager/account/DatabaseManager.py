@@ -1,6 +1,6 @@
 import sqlite3
 
-class DatabaseManager:
+class DatabaseManager:                          # would comment but this is all pretty self explanitory
     def __init__(self, db):
         self.connection = sqlite3.connect(db)
         self.cur = self.connection.cursor()

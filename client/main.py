@@ -35,11 +35,12 @@ class App:
 
 
 if __name__ == '__main__':
-    rq = Queue()
-    oq = Queue()
+    rq = Queue()        # initialising request and output queue in order to pass data to the request handler running in
+    oq = Queue()        # a separate process, this is because these queues will be stored in shared memory and therefore
+                        # accessible from the request handler running in that seprate process
 
-    rh = RequestHandler(rq, oq)
-    rh.start()
+    rh = RequestHandler(rq, oq)     # instantiating the request handler with the queues in shared memory as arguments
+    rh.start()                      # starting the request handler in seprate process
 
     app = App(rq, oq)
 

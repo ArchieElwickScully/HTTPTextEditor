@@ -3,8 +3,8 @@ import customtkinter as ctk
 from itertools import cycle
 
 
-class MainFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+class MainFrame(ctk.CTkFrame):                          # defining up the main frame widget, this is essentially just
+    def __init__(self, parent, **kwargs):               # to manage the positioning of the rest of the frames
         super().__init__(parent, **kwargs)
 
         self.grid_columnconfigure(0, weight=2)
@@ -21,8 +21,8 @@ class MainFrame(ctk.CTkFrame):
         self.grid_propagate(False)
 
 
-class TextFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+class TextFrame(ctk.CTkFrame):                          # defining the text frame widget, this is for the cool little
+    def __init__(self, parent, **kwargs):               # title and info abt the application
         super().__init__(parent, **kwargs)
 
         self.title = ctk.CTkLabel(self, text='Clide',
@@ -45,9 +45,9 @@ class TextFrame(ctk.CTkFrame):
         self.grid_propagate(False)
 
 
-class ButtonFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
-        super().__init__(parent, **kwargs)
+class ButtonFrame(ctk.CTkFrame):                        # where the magic happens
+    def __init__(self, parent, **kwargs):               # this is the widget we have the login/create acc form
+        super().__init__(parent, **kwargs)              # and implement actually logging in
 
         self.states = cycle(['Login', 'Create'])
         self.switchButtonStates = cycle(['Dont have an account?', 'Already have an account?'])
@@ -92,8 +92,8 @@ class ButtonFrame(ctk.CTkFrame):
         command = ''
 
         if username == '' or password == '':
-            print('no')
-
+            print('Username or Password cannot be blank')
+            return
 
         match self.stateStringVar.get():
             case 'Login':

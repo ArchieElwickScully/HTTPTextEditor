@@ -15,19 +15,20 @@ class AccountWindow(ctk.CTk):
         self.alerts = InfoBox()
 
         # vars
-        self.requestQueue: Queue = requestQueue
-        self.lastClick = (0, 0)
+        self.requestQueue: Queue = requestQueue     # request queue so that frames can access to send data to rh
+        self.lastClick = (0, 0)                     # storing pos of last click for use in window movement
         self.HEIGHT = 400
         self.WIDTH = 650
 
         # window attributes etc
         self.geometry('650x400')
-        self.overrideredirect(True)
-
+        self.overrideredirect(True)     # <- this makes the os window manager ignore this window this is cool because it
+                                        # removes the top bar at the window allowing for a more sleek look, but creates
+                                        # some issues with dragging and focusing window which we fix in code later
         match platform.lower():
-            case 'darwin':
-                self.configure(fg_color='systemTransparent')
-                self.wm_attributes("-transparent", True)
+            case 'darwin':                                      # we need this here as unfortunately creating a
+                self.configure(fg_color='systemTransparent')    # transparent window is entirely platform dependent
+                self.wm_attributes("-transparent", True)        # and works differently if at all on separate platforms
             case 'windows':
                 self.wm_attributes("-topmost", True)
                 self.wm_attributes("-disabled", True)
@@ -37,8 +38,8 @@ class AccountWindow(ctk.CTk):
         self.centre()
 
         # setting up binds for window dragging
-        self.bind('<Button-1>', self.registerClick)
-        self.bind('<B1-Motion>', self.drag)
+        self.bind('<Button-1>', self.registerClick)     # binding clicking the left mouse button to registerClick()
+        self.bind('<B1-Motion>', self.drag)             # binding dragging mouse while left mouse is down to drag()
 
         # window stuff
         self.grid_columnconfigure(0, weight=1)
@@ -56,13 +57,14 @@ class AccountWindow(ctk.CTk):
         self.geometry(f'+{diff[0]}+{diff[1]}')
 
     def registerClick(self, e: Event):
-        self.lastClick = (e.x_root - self.winfo_rootx(),
-                          e.y_root - self.winfo_rooty())
+        self.lastClick = (e.x_root - self.winfo_rootx(),    # calculates the last click relative to the window by
+                          e.y_root - self.winfo_rooty())    # subtracting the distance from the cursor to the leftmost
+                                                            # and topmost of screen from the leftmost and topmost of win
         # print(self.lastClick)
         # print(self.lastClick[0], e.x_root, self.winfo_pointerx(), self.winfo_rootx())
 
     def centre(self):
-        x = math.trunc((self.winfo_screenwidth() / 2) - (self.WIDTH / 2))
+        x = math.trunc((self.winfo_screenwidth() / 2) - (self.WIDTH / 2))       # kinda self explanitory i hope
         y = math.trunc((self.winfo_screenheight() / 2) - (self.HEIGHT / 2))
 
         self.geometry(f'+{x}+{y}')
