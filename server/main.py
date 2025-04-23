@@ -19,7 +19,7 @@ class HTTP(BaseHTTPRequestHandler):
 
         responseCode, response = self.rh.handlePost(body.decode("UTF-8"))
         #resp = '{' + f'"writtenResponse": "{m}", "token": "{uuid}"' + '}' # bit of a hacky way to do this but running
-                                                                      # out of time
+                                                                      # out of time -> fixed it
         self.send_response(responseCode)
         self.end_headers()
 

@@ -35,7 +35,8 @@ class RequestHandler(Process):
             case 'account':
                 self.doAccountRequest(
                     task['data']['command'],
-                    task['data']['username'], task['data']['password']
+                    task['data']['username'],
+                    task['data']['password']
                 )
 
             case _:
@@ -47,11 +48,12 @@ class RequestHandler(Process):
 
         sendData = {
             'command': command,
-            "args": {
+            'args': {
                 'username': username, 'password': password,
                 'clientPubKey': self.encryption.exportClientPublicKeyForServer()
             }
         }
+
 
         r = requests.post(self.SERVER, json=sendData)
 

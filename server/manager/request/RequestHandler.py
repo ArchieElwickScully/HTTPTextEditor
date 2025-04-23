@@ -27,14 +27,13 @@ class RequestHandler:
 
     def handlePost(self, data: str) -> (int, str):
         d: dict = json.loads(data)
-
         command = d['command']
 
-        if command in self.commands:
-            return self.commands[command](d['args'])
-        else:
+        if command not in self.commands:
             print("returned command does not exist")
             return 400, str(Response("Command does not exist"))
+
+        return self.commands[command](d['args'])
 
     def createAccount(self, args: dict) -> (int, str):
         try:
@@ -42,38 +41,38 @@ class RequestHandler:
                 return 400, str(Response("Account creation error, Username already taken"))
 
             self.dbm.addAccount(args['username'], args['password'])
-            print(f'created account: {args["username"]}')
+            print(f'created accouznt: {args["username"]}')
 
             return 200, str(Response("Success. Account created"))
 
-        except: # exception too broad but i will fix later
+        except Exception as e: # exception too broad but i will fix later
+            #print(e)
             return 400, str(Response("Account creation error"))
 
     def signIn(self, args: dict) -> (int, str):
         try:
-            if self.dbm.validateAccount(args['username'], args['password']):
-
-                clientPubKey: str = args['clientPubKey']
-
-                sessionAESKey: bytes; encSessionAESKey: str
-                sessionAESKey, encSessionAESKey = self.encryption.genSessionKeyAndEnc(clientPubKey)
-
-                token: uuid = self.tm.generateToken(args['username'], sessionAESKey)
-                cipher = self.encryption.encryptData(sessionAESKey, str(token))
-
-                writtenResponse = 'Succes. Sign In complete'
-
-                response = str(Response(writtenResponse=writtenResponse, token=cipher, sessionKey=encSessionAESKey))
-
-                print(f'successful sign into {args["username"]}')
-                return 200, response
-
-            else:
+            if not self.dbm.validateAccount(args['username'], args['password']):
                 print(f'Account sign in failure on: {args["username"]}')
-                return 400, str(Response('Sign In error')) # make more specific later, username does not exist, password incorrect etc
+                return 400, str(Response('Sign In error')) # make more specific later, username does not exist,
+                                                           # password incorrect etc
+            clientPubKey: str = args['clientPubKey']
+
+            sessionAESKey: bytes
+            encSessionAESKey: str
+            sessionAESKey, encSessionAESKey = self.encryption.genSessionKeyAndEnc(clientPubKey)
+
+            token: uuid = self.tm.generateToken(args['username'], sessionAESKey)
+            cipher = self.encryption.encryptData(sessionAESKey, str(token))
+
+            writtenResponse = 'Succes. Sign In complete'
+
+            response = str(Response(writtenResponse=writtenResponse, token=cipher, sessionKey=encSessionAESKey))
+
+            print(f'successful sign into {args["username"]}')
+            return 200, response
 
         except Exception as e:
-            print(e)
+            #print(e)
             return 400, str(Response('Sign In error'))
 
 """
